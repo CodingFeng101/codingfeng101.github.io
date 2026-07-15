@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.npm-cache/
+qa/
+audit-homepage-*/
+*.log
+
+# Local-only prototype and QA notes
+.npmrc
+AGENTS.md
+design-qa.md
+public/assets/resume-design-reference.png
+public/assets/canvasanvil-output.png
+public/assets/unigraph-workspace.png
