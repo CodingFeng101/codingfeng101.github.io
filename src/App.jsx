@@ -53,6 +53,7 @@ const projects = [
     period: "2024.04 — 2025.05",
     role: "全栈参与",
     links: [
+      { label: "开源", href: "https://github.com/CodingFeng101/UniGraph.git", kind: "source" },
       { label: "使用", href: "https://unigraph.jxselab.com", kind: "use" },
     ],
     copy: [
@@ -127,13 +128,13 @@ const projects = [
 const papers = [
   {
     marker: "A",
-    label: "TKDE · Major Revision（大修）",
+    label: "TKDE · Major Revision（大修）· 第五作者",
     title: "Domain-Specific Semantic-Rich Knowledge Graph Construction through Human-LLM Team Working",
     summary: "探索 Human–LLM 协同的领域知识图谱设计流程，将自动探索与人工反馈结合，提升候选 Schema 的完整性与一致性。",
   },
   {
     marker: "B",
-    label: "Knowledge-Based Systems · SCI 一区 · 投稿 / 在审 · 共同作者",
+    label: "Knowledge-Based Systems · SCI 一区 · 投稿 / 在审 · 第四作者",
     title: "TriadKGC: Schema-Guided Knowledge Graph Completion with Multi-Level Validation",
     summary: "围绕 Schema 引导与多层验证展开知识图谱补全研究；当前仅展示投稿状态，不作录用或发表声明。",
   },
@@ -144,13 +145,19 @@ const patents = [
     marker: "C",
     title: "一种基于局部语义全局社区化的知识图谱搜索方法及系统",
     number: "ZL 2025 1 0134422.6",
-    summary: "结合实体属性向量匹配、多级社区划分与多维上下文构建，提升知识图谱搜索的相关性与可解释性。",
+    summary: "第二发明人。结合实体属性向量匹配、多级社区划分与多维上下文构建，提升知识图谱搜索的相关性与可解释性。",
   },
   {
     marker: "D",
     title: "一种室内装修图双模编辑与一致生成方法、设备及介质",
     number: "ZL 202610501360.2",
-    summary: "面向 AI 室内设计的局部补丁 / 全局替换双模编辑，并保证图纸与物料清单同源一致。",
+    summary: "第二发明人。面向 AI 室内设计的局部补丁 / 全局替换双模编辑，并保证图纸与物料清单同源一致。",
+  },
+  {
+    marker: "E",
+    title: "一种自适应层级医疗知识图谱社区构建方法、设备及介质",
+    number: "ZL 2026 1 0669516.8",
+    summary: "",
   },
 ];
 
@@ -168,21 +175,13 @@ const experiences = [
   },
   {
     id: "jiangxi-telecom",
-    period: "2025.10 — 2025.12",
+    period: "2025.10 — 2026.06",
     company: "江西电信信息产业有限公司",
-    role: "AI 应用开发实习生",
+    role: "智能体开发实习生",
     details: [
-      "参与课程推荐系统开发，将 UniGraph 整体迁移并适配到课程推荐业务场景。",
-      "围绕课程信息、用户需求和课程标签构建知识图谱关联关系。",
-      "参与图谱检索流程设计，支撑课程查询、关联分析和推荐结果生成。",
+      "负责智能教育资源推荐系统的知识图谱全链路模块设计与实现，支撑教学知识的组织、关联与检索。",
+      "推进 RAG 检索链路的工程落地，支持课程推荐及学科知识问答。",
     ],
-  },
-  {
-    id: "nanchang-19",
-    period: "2026.03 — 2026.06",
-    company: "南昌市十九中",
-    role: "实习老师",
-    details: ["2026 年 3 月至 6 月在南昌市十九中开展教学实习。"],
   },
 ];
 
@@ -550,8 +549,8 @@ export function App() {
               <MagneticArticle className="paper-card patent-card" key={patent.marker}>
                 <div className="paper-meta"><b>{patent.marker}</b><span>已授权发明专利</span></div>
                 <h3>{patent.title}</h3>
-                <p>{patent.summary}</p>
-                <small>专利号：{patent.number}</small>
+                {patent.summary && <p>{patent.summary}</p>}
+                {patent.number && <small>第二发明人 · 专利号：{patent.number}</small>}
                 <div className="patent-stamp"><SealCheck size={23} weight="bold" />已授权</div>
               </MagneticArticle>
             ))}
@@ -597,7 +596,7 @@ export function App() {
         <section className="honors-section section-anchor" data-nav="experience">
           <div className="section-index">06</div>
           <div className="section-heading compact reveal-group"><p className="reveal-item"><SealCheck size={20} weight="duotone" />荣誉证书</p></div>
-          <p className="honors-copy reveal-item">综合素质三等奖学金 · 软件设计师（中级） · “挑战杯”省级二等奖 · “建行杯”江西省大学生创新大赛省级二等奖 · 大学英语六级 · 软件著作权 · 普通话二级乙等</p>
+          <p className="honors-copy reveal-item">软件设计师（软考中级）资格证书 · 综合素质二等奖学金 · “挑战杯”大学生创业计划大赛省级二等奖 · “建行杯”江西省大学生创新大赛省级二等奖</p>
         </section>
       </main>
 
