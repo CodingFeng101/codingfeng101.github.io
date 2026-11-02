@@ -66,8 +66,8 @@ const projects = [
     ],
     stack: ["Neo4j", "FastAPI", "Python", "React", "TypeScript", "Docker"],
     image: assetUrl("assets/unigraph-live.png"),
-    imageAlt: "UniGraph 官网登录页面",
-    caption: "UniGraph 官网 · 真实页面",
+    imageAlt: "UniGraph GitHub 项目中的知识图谱构建界面截图",
+    caption: "UniGraph 图谱构建工作区 · GitHub 项目截图",
     pipeline: [
       [FileText, "文本输入"],
       [Wrench, "实体关系抽取"],
@@ -95,8 +95,8 @@ const projects = [
     ],
     stack: ["React", "TypeScript", "Vite", "Node / Express", "AI Agent", "多模态"],
     image: assetUrl("assets/canvasanvil-live.png"),
-    imageAlt: "CanvasAnvil 官网多画布智能工作台首页",
-    caption: "CanvasAnvil 官网 · 真实页面",
+    imageAlt: "CanvasAnvil GitHub 项目中的学术研究框架图生成示例",
+    caption: "CanvasAnvil 图表生成示例 · GitHub 项目图",
     pipeline: [
       [FileText, "文本"],
       [Images, "参考图"],
