@@ -94,7 +94,7 @@ const projects = [
       "设计统一模型调用层与多类 AI Skill，适配文本、参考图、遮罩图和多图输入。",
     ],
     stack: ["React", "TypeScript", "Vite", "Node / Express", "AI Agent", "多模态"],
-    image: assetUrl("assets/canvasanvil-live.png"),
+    image: assetUrl("assets/canvasanvil-portal.png"),
     imageAlt: "CanvasAnvil 软件门户首页，展示多画布工作台及图表、室内设计和 PPT 入口",
     caption: "CanvasAnvil 软件门户 · GitHub 当前版本截图",
     pipeline: [
