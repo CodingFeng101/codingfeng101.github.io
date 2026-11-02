@@ -28,6 +28,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`;
+
 const skills = [
   "Python",
   "TypeScript",
@@ -63,7 +65,7 @@ const projects = [
       "参与图谱问答接口与多维上下文重排融合，提升回答的相关性与可解释性。",
     ],
     stack: ["Neo4j", "FastAPI", "Python", "React", "TypeScript", "Docker"],
-    image: "/assets/unigraph-live.png",
+    image: assetUrl("assets/unigraph-live.png"),
     imageAlt: "UniGraph 官网登录页面",
     caption: "UniGraph 官网 · 真实页面",
     pipeline: [
@@ -92,7 +94,7 @@ const projects = [
       "设计统一模型调用层与多类 AI Skill，适配文本、参考图、遮罩图和多图输入。",
     ],
     stack: ["React", "TypeScript", "Vite", "Node / Express", "AI Agent", "多模态"],
-    image: "/assets/canvasanvil-live.png",
+    image: assetUrl("assets/canvasanvil-live.png"),
     imageAlt: "CanvasAnvil 官网多画布智能工作台首页",
     caption: "CanvasAnvil 官网 · 真实页面",
     pipeline: [
@@ -120,8 +122,8 @@ const projects = [
       "将标题栏、卡片、图标、线条与表格复原为真实文本框、形状和独立图片资产。",
     ],
     stack: ["Python", "Codex Skill", "PPTX", "OCR", "图像处理"],
-    before: "/assets/slide-alchemy-before.png",
-    after: "/assets/slide-alchemy-after.png",
+    before: assetUrl("assets/slide-alchemy-before.png"),
+    after: assetUrl("assets/slide-alchemy-after.png"),
   },
 ];
 
@@ -257,7 +259,7 @@ function HeroDiagram() {
   return (
     <div className="hero-diagram">
       <img
-        src="/assets/hero-diagram-hd.png"
+        src={assetUrl("assets/hero-diagram-hd.png")}
         alt="问题驱动知识图谱，并连接 AI Agent 与可编辑创作的手绘关系图"
       />
     </div>
@@ -518,7 +520,7 @@ export function App() {
             <p className="hero-description intro-reveal">我关注知识图谱、AI Agent 与可编辑式创作。<br />从研究问题出发，构建系统、打磨产品，让复杂知识既能检索、理解，也能继续编辑与创造。</p>
             <div className="hero-actions intro-reveal">
               <MagneticLink href="#projects" onClick={scrollTo("#projects")} className="primary-action">浏览代表作 <ArrowRight size={18} /></MagneticLink>
-              <MagneticLink href="/feng-guodong-resume.pdf" download className="secondary-action">下载 PDF <DownloadSimple size={18} /></MagneticLink>
+              <MagneticLink href={assetUrl("feng-guodong-resume.pdf")} download className="secondary-action">下载 PDF <DownloadSimple size={18} /></MagneticLink>
             </div>
           </div>
           <div className="hero-visual intro-reveal">
@@ -627,7 +629,7 @@ export function App() {
             <button type="button" className="wechat-close" onClick={() => setWechatOpen(false)} aria-label="关闭微信二维码">
               <X size={18} weight="bold" />
             </button>
-            <img src="/assets/wechat-qr.jpg" alt="微信好友二维码" />
+            <img src={assetUrl("assets/wechat-qr.jpg")} alt="微信好友二维码" />
             <p id="wechat-title">微信扫码添加</p>
           </div>
         </div>
