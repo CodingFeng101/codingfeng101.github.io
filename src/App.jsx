@@ -95,8 +95,8 @@ const projects = [
     ],
     stack: ["React", "TypeScript", "Vite", "Node / Express", "AI Agent", "多模态"],
     image: assetUrl("assets/canvasanvil-live.png"),
-    imageAlt: "CanvasAnvil GitHub 项目中的学术研究框架图生成示例",
-    caption: "CanvasAnvil 图表生成示例 · GitHub 项目图",
+    imageAlt: "CanvasAnvil 软件门户首页，展示多画布工作台及图表、室内设计和 PPT 入口",
+    caption: "CanvasAnvil 软件门户 · GitHub 当前版本截图",
     pipeline: [
       [FileText, "文本"],
       [Images, "参考图"],
