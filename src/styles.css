@@ -81,6 +81,9 @@ main { padding-left: 90px; }
 .project-title-row p { margin: 0; font-family: "Noto Serif SC", "Songti SC", serif; font-size: 17px; font-weight: 700; }
 .role-tag { display: inline-flex; min-height: 27px; align-items: center; padding: 3px 7px; border: 1px solid rgba(21, 89, 189, .35); color: var(--blue); font-size: 11px; line-height: 1; }
 .project-links { display: inline-flex; align-items: center; gap: 6px; }
+.project-stats { display: inline-flex; align-items: center; gap: 9px; color: #596579; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 10px; white-space: nowrap; }
+.project-stats span { display: inline-flex; align-items: center; gap: 4px; }
+.project-stats svg { color: var(--blue); }
 .project-link { display: inline-flex; min-height: 27px; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid rgba(21, 89, 189, .38); color: var(--blue); background: rgba(255,255,255,.24); font-size: 10px; font-weight: 700; line-height: 1; transition: transform 180ms ease, color 180ms ease, background 180ms ease; }
 .project-link:hover { color: white; background: var(--blue); transform: translateY(-1px); }
 .project-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

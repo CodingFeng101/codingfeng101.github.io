@@ -10,6 +10,7 @@ import {
   DownloadSimple,
   EnvelopeSimple,
   FileText,
+  GitFork,
   GithubLogo,
   Graph,
   Images,
@@ -18,6 +19,7 @@ import {
   PresentationChart,
   Robot,
   SealCheck,
+  Star,
   Stack,
   WechatLogo,
   Wrench,
@@ -25,6 +27,7 @@ import {
 } from "@phosphor-icons/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getGithubRepoStats, GITHUB_STATS_CACHE_TTL } from "./githubStats.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,6 +55,7 @@ const projects = [
     id: "unigraph",
     title: "UniGraph",
     subtitle: "一站式知识图谱智造平台",
+    githubRepo: "CodingFeng101/UniGraph",
     period: "2024.04 — 2025.05",
     role: "全栈参与",
     links: [
@@ -81,6 +85,7 @@ const projects = [
     id: "canvasanvil",
     title: "CanvasAnvil",
     subtitle: "多画布 AI 创作平台",
+    githubRepo: "CodingFeng101/CanvasAnvil",
     period: "2026.01 — 2026.05",
     role: "独立开发",
     links: [
@@ -110,6 +115,7 @@ const projects = [
     id: "slide-alchemy",
     title: "Slide Alchemy",
     subtitle: "图片式 PPT 可编辑化重建 Skill",
+    githubRepo: "CodingFeng101/slide-alchemy",
     period: "2026.06 — 至今",
     role: "项目负责人 / 开源作者",
     links: [
@@ -267,6 +273,25 @@ function HeroDiagram() {
 }
 
 function ProjectSection({ project }) {
+  const [githubStats, setGithubStats] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    const [owner, repo] = project.githubRepo.split("/");
+    const refreshStats = () => {
+      getGithubRepoStats(owner, repo).then((stats) => {
+        if (active) setGithubStats(stats);
+      });
+    };
+    refreshStats();
+    const refreshTimer = window.setInterval(refreshStats, GITHUB_STATS_CACHE_TTL);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
+  }, [project.githubRepo]);
+
   return (
     <section className="project-section section-anchor" id={project.id} data-section={project.id}>
       <div className="project-number" aria-hidden="true">{project.number}</div>
@@ -279,6 +304,16 @@ function ProjectSection({ project }) {
           </div>
           <div className="project-heading-meta">
             <span className="role-tag">{project.role}</span>
+            {githubStats && (
+              <span className="project-stats" aria-label={`${project.title} GitHub 统计`}>
+                <span role="img" aria-label={`Star ${githubStats.stars}`} title={`Star ${githubStats.stars}`}>
+                  <Star size={14} weight="fill" aria-hidden="true" />{githubStats.stars.toLocaleString("zh-CN")}
+                </span>
+                <span role="img" aria-label={`Fork ${githubStats.forks}`} title={`Fork ${githubStats.forks}`}>
+                  <GitFork size={14} weight="bold" aria-hidden="true" />{githubStats.forks.toLocaleString("zh-CN")}
+                </span>
+              </span>
+            )}
             <span className="project-links" aria-label={`${project.title} 项目链接`}>
               {project.links.map((link) => {
                 const Icon = link.kind === "source" ? GithubLogo : ArrowSquareOut;
