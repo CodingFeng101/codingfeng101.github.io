@@ -7,7 +7,6 @@ import {
   Briefcase,
   ChatCircleDots,
   CheckCircle,
-  DownloadSimple,
   EnvelopeSimple,
   FileText,
   GitFork,
@@ -555,7 +554,6 @@ export function App() {
             <p className="hero-description intro-reveal">我关注知识图谱、AI Agent 与可编辑式创作。<br />从研究问题出发，构建系统、打磨产品，让复杂知识既能检索、理解，也能继续编辑与创造。</p>
             <div className="hero-actions intro-reveal">
               <MagneticLink href="#projects" onClick={scrollTo("#projects")} className="primary-action">浏览代表作 <ArrowRight size={18} /></MagneticLink>
-              <MagneticLink href={assetUrl("feng-guodong-resume.pdf")} download className="secondary-action">下载 PDF <DownloadSimple size={18} /></MagneticLink>
             </div>
           </div>
           <div className="hero-visual intro-reveal">
