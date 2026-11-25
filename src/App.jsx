@@ -4,6 +4,7 @@ import {
   chapters,
   education,
   experiences,
+  heroShots,
   honors,
   letter,
   papers,
@@ -91,7 +92,7 @@ export function App() {
       <ProgressBits onNavigate={navigate} />
 
       <main>
-        <Hero profile={profile} projects={projects} skills={skills} onNavigate={navigate} folio={next()} style={PATTERNS.hero} />
+        <Hero profile={profile} shots={heroShots} skills={skills} onNavigate={navigate} folio={next()} style={PATTERNS.hero} />
         <Page className="band band--oat" folio={next()} head={`${profile.name} · 自述`} aria-label="自述" style={PATTERNS.prose}>
           <Prose prose={prose} />
         </Page>

@@ -91,6 +91,10 @@ function CompareSlider({ before, after }) {
 export function Project({ project }) {
   const ref = useRef(null);
   const stats = useGithubStats(project.githubRepo);
+  // 视频加载失败（比如还没上传）就退回截图
+  const [videoFailed, setVideoFailed] = useState(false);
+  const showVideo = project.video && !videoFailed;
+  const caption = showVideo ? project.caption : project.stillCaption || project.caption;
 
   useMotion(ref, ({ motion, desktop, fine }) => {
     if (!motion) return undefined;
@@ -117,7 +121,7 @@ export function Project({ project }) {
       .from(q(".sheet--mid"), { rotate: 0, yPercent: 18, opacity: 0, duration: 1 }, "<0.08")
       .from(q(".sheet--front"), { yPercent: 22, opacity: 0, duration: 1 }, "<0.08")
       .from(q(".shot-mask"), { clipPath: "inset(0% 100% 0% 0%)", duration: 1.2, ease: EASE.travel }, "<0.2")
-      .from(q(".shot-mask img"), { scale: 1.18, duration: 1.6 }, "<")
+      .from(q(".shot-mask img, .shot-mask video"), { scale: 1.18, duration: 1.6 }, "<")
       .from(q(".hand-arrow .draw"), { drawSVG: "0%", duration: 0.7, stagger: 0.3, ease: "power2.inOut" }, "-=0.6")
       .from(q(".hand-note i"), { opacity: 0, y: 6, duration: 0.4, stagger: 0.035 }, "-=0.2")
       .from(q(".stack-caption"), { opacity: 0, y: 8, duration: 0.6 }, "<")
@@ -231,8 +235,18 @@ export function Project({ project }) {
             <span className="sheet sheet--back" aria-hidden="true" />
             <span className="sheet sheet--mid" aria-hidden="true" />
             <figure className="sheet sheet--front">
-              {project.video ? (
-                <div className="shot-mask"><video src={project.video} poster={project.image} autoPlay muted loop playsInline aria-label={project.imageAlt} /></div>
+              {showVideo ? (
+                <div className="shot-mask">
+                  <video
+                    src={project.video}
+                    poster={project.image || project.after}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    aria-label={`${project.title} 演示视频`}
+                    onError={() => setVideoFailed(true)}
+                  />
+                </div>
               ) : project.image ? (
                 <div className="shot-mask"><img src={project.image} alt={project.imageAlt} /></div>
               ) : (
@@ -244,7 +258,7 @@ export function Project({ project }) {
             <p className="hand-note">{[...project.note].map((char, index) => <i key={index}>{char}</i>)}</p>
           </div>
         </div>
-        <p className="stack-caption">{project.caption}</p>
+        <p className="stack-caption">{caption}</p>
         {project.pipeline && (
           <div className="pipeline" aria-label={`${project.title} 处理流程`}>
             <span className="pipe-line" aria-hidden="true"><i className="pipe-dot" /></span>

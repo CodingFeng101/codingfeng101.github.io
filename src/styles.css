@@ -360,7 +360,7 @@ main { position: relative; }
 .sheet--front { position: relative; padding: 8px; background: #fff; box-shadow: 0 4px 24px rgba(0, 0, 0, .06), 0 0 0 1px rgba(20, 20, 19, .06); }
 .shot-mask { overflow: hidden; border-radius: 7px; }
 .shot-mask img, .shot-mask video { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
-.shot-mask video { aspect-ratio: 16 / 9; object-position: center; background: var(--ink); }
+.shot-mask video { aspect-ratio: 16 / 9; object-fit: contain; object-position: center; background: var(--ink); }
 .pj-motto { position: absolute; z-index: 4; top: -14px; left: -14px; rotate: -8deg; }
 .hand-arrow { position: absolute; z-index: 3; right: 3%; bottom: -40px; width: 64px; transform: rotate(160deg) scaleX(-1); overflow: visible; }
 .hand-note {

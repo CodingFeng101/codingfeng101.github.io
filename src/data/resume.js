@@ -3,6 +3,10 @@
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`;
 
+// 演示视频作为附件放在本站仓库的 Release 里（tag 为 demo），不进 git 历史。
+// 链接永久有效；视频还没上传或加载失败时，作品区会自动退回显示截图。
+const releaseVideo = (file) => `https://github.com/CodingFeng101/codingfeng101.github.io/releases/download/demo/${file}`;
+
 export const profile = {
   name: "冯国栋",
   nameEn: "Feng Guodong",
@@ -66,8 +70,16 @@ export const skills = [
   "Prompt Engineering",
 ];
 
+export const heroShots = {
+  topLeft: { src: assetUrl("assets/unigraph-live.png"), label: "UniGraph", target: "unigraph" },
+  topRight: { src: assetUrl("assets/hero-canvasanvil-interior.png"), label: "CanvasAnvil · 室内设计", target: "canvasanvil" },
+  bottomLeft: { src: assetUrl("assets/hero-canvasanvil-diagram.jpg"), label: "CanvasAnvil · 图表绘制", target: "canvasanvil" },
+  bottomRight: { src: assetUrl("assets/hero-slide-alchemy.jpg"), label: "Slide Alchemy · 可编辑", target: "slide-alchemy" },
+};
+
 // tone: 作品衬底色卡（peach / heather / cactus / oat）
 // note: 截图旁的手写批注；motto: 盖在作品角上的闲章；video: 演示视频地址（留空则显示截图）
+// caption: 有视频时的图注；stillCaption: 退回截图时的图注
 export const projects = [
   {
     number: "01",
@@ -79,7 +91,7 @@ export const projects = [
     role: "全栈参与",
     tone: "cactus",
     motto: "格物",
-    video: "", // 以后放演示视频的地址，填了就替换截图
+    video: releaseVideo("unigraph-demo.mp4"),
     note: "从一段文本，到一张能回答问题的图。",
     links: [
       { label: "开源", href: "https://github.com/CodingFeng101/UniGraph.git", kind: "source" },
@@ -94,7 +106,8 @@ export const projects = [
     stack: ["Neo4j", "FastAPI", "Python", "React", "TypeScript", "Docker"],
     image: assetUrl("assets/unigraph-live.png"),
     imageAlt: "UniGraph 平台登录页截图",
-    caption: "UniGraph · 线上版本",
+    caption: "UniGraph · 演示视频",
+    stillCaption: "UniGraph · 线上版本",
     pipeline: ["文本输入", "实体关系抽取", "图谱索引", "上下文重排", "智能问答"],
   },
   {
@@ -107,7 +120,7 @@ export const projects = [
     role: "独立开发",
     tone: "peach",
     motto: "随心",
-    video: "",
+    video: releaseVideo("canvasanvil-demo.mp4"),
     note: "圈一下，只改这里。",
     links: [
       { label: "开源", href: "https://github.com/CodingFeng101/CanvasAnvil.git", kind: "source" },
@@ -122,7 +135,8 @@ export const projects = [
     stack: ["React", "TypeScript", "Vite", "Node / Express", "AI Agent", "多模态"],
     image: assetUrl("assets/canvasanvil-portal.png"),
     imageAlt: "CanvasAnvil 软件门户首页，展示多画布工作台及图表、室内设计和 PPT 入口",
-    caption: "CanvasAnvil · 软件门户",
+    caption: "CanvasAnvil · 演示视频",
+    stillCaption: "CanvasAnvil · 软件门户",
     pipeline: ["文本", "参考图", "多图输入", "AI Skill", "生成与编辑"],
   },
   {
@@ -135,7 +149,7 @@ export const projects = [
     role: "项目负责人 / 开源作者",
     tone: "heather",
     motto: "点石",
-    video: "",
+    video: releaseVideo("slide-alchemy-demo.mp4"),
     note: "可编辑，才是真正的生产力。",
     links: [{ label: "开源", href: "https://github.com/CodingFeng101/slide-alchemy.git", kind: "source" }],
     copy: [
@@ -147,7 +161,8 @@ export const projects = [
     stack: ["Python", "Codex Skill", "PPTX", "OCR", "图像处理"],
     before: assetUrl("assets/slide-alchemy-before.png"),
     after: assetUrl("assets/slide-alchemy-after.png"),
-    caption: "拖动中线：左边是图片，右边已可编辑",
+    caption: "Slide Alchemy · 演示视频",
+    stillCaption: "拖动中线：左边是图片，右边已可编辑",
   },
 ];
 
@@ -215,10 +230,10 @@ export const experiences = [
 export const education = [
   {
     id: "edu-1",
-    period: "【20XX.09 — 20XX.06】",
-    school: "【学校名称】",
-    major: "【专业】 · 【学历，如 本科 / 硕士】",
-    note: "【一句话：研究方向、GPA / 排名，或你最想让人记住的一点】",
+    period: "2023.9-2027.6",
+    school: "江西师范大学",
+    major: "计算机科学与技术（师范）",
+    note: "均分 82",
   },
 ];
 

@@ -5,30 +5,26 @@ import { ganzhiYear, shichen, solarTerm } from "../almanac.js";
 import { Asterisk, Birds, Cloud, HandCircle, Mountains, PageFrame, Seal, Squiggle, toChineseNumeral } from "./Ornaments.jsx";
 
 // 首屏四周的「纸片」：真实作品截图 + 色卡手绘纹理块。x / y 为百分比位置，depth 越大视差越强。
-function buildTiles(projects) {
-  const shots = projects.flatMap((p) => (p.image ? [{ src: p.image, label: p.title, target: p.id }] : [
-    { src: p.before, label: `${p.title} · 原图`, target: p.id },
-    { src: p.after, label: `${p.title} · 可编辑`, target: p.id },
-  ]));
+function buildTiles({ topLeft, topRight, bottomLeft, bottomRight }) {
   return [
-    { kind: "img", ...shots[0], x: 3, y: 9, w: 230, rot: -4, depth: 1.2 },
+    { kind: "img", ...topLeft, x: 3, y: 9, w: 230, rot: -4, depth: 1.2 },
     { kind: "card", tone: "heather", x: 21, y: 13, w: 78, rot: 6, depth: 0.6, v: 1 },
     { kind: "card", tone: "cactus", x: 11, y: 47, w: 118, rot: -2, depth: 0.9, v: 2 },
     { kind: "card", tone: "peach", x: 1, y: 70, w: 150, rot: 3, depth: 0.5, v: 0 },
-    { kind: "img", ...shots[2], x: 17, y: 75, w: 185, rot: 5, depth: 1.4 },
+    { kind: "img", ...bottomLeft, x: 17, y: 75, w: 185, rot: 5, depth: 1.4 },
     { kind: "note", text: "研究 × 工程", x: 22, y: 36, w: 108, rot: -7, depth: 1.7 },
-    { kind: "img", ...shots[1], x: 75, y: 7, w: 240, rot: 4, depth: 1.1 },
+    { kind: "img", ...topRight, x: 75, y: 7, w: 240, rot: 4, depth: 1.1 },
     { kind: "card", tone: "oat", x: 70, y: 31, w: 76, rot: -8, depth: 1.8, v: 3 },
     { kind: "card", tone: "peach", x: 87, y: 40, w: 122, rot: 3, depth: 0.7, v: 1 },
-    { kind: "img", ...shots[3], x: 71, y: 64, w: 200, rot: -3, depth: 1.3 },
+    { kind: "img", ...bottomRight, x: 71, y: 64, w: 200, rot: -3, depth: 1.3 },
     { kind: "card", tone: "cactus", x: 91, y: 77, w: 92, rot: 8, depth: 0.6, v: 2 },
     { kind: "card", tone: "heather", x: 36, y: 1, w: 58, rot: -5, depth: 0.9, v: 0 },
   ];
 }
 
-export function Hero({ profile, projects, skills, onNavigate, folio, style }) {
+export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
   const ref = useRef(null);
-  const tiles = buildTiles(projects);
+  const tiles = buildTiles(shots);
 
   useMotion(ref, ({ motion, desktop }) => {
     if (!motion) return undefined;
