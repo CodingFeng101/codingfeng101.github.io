@@ -1,19 +1,7 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ScrollTrigger } from "./motion.js";
-import {
-  chapters,
-  education,
-  experiences,
-  heroShots,
-  honors,
-  letter,
-  papers,
-  patents,
-  profile,
-  projects,
-  prose,
-  skills,
-} from "./data/resume.js";
+import { getContent } from "./data/content.js";
+import { HTML_LANG, LangContext, UI, detectLang, saveLang } from "./i18n.jsx";
 import { Preloader } from "./components/Preloader.jsx";
 import { Cursor } from "./components/Cursor.jsx";
 import { Nav, ProgressBits, ScrollRuler } from "./components/Chrome.jsx";
@@ -38,18 +26,71 @@ import { Research } from "./components/Research.jsx";
 import { Education, Experience } from "./components/Story.jsx";
 import { Letter } from "./components/Letter.jsx";
 
-const navItems = ["works", "research", "experience", "education", "letter"].map((id) => ({
-  id,
-  label: chapters[id].title,
-  short: chapters[id].title,
-}));
-const rulerItems = [{ id: "top", short: "序" }, ...navItems];
+const NAV_IDS = ["works", "research", "experience", "education", "letter"];
+
+// 切换语言前记下读到哪一页的哪个位置，换完再滚回去
+function readingPosition() {
+  const pages = [...document.querySelectorAll(".site .page")];
+  const index = pages.findIndex((page) => page.getBoundingClientRect().bottom > window.innerHeight * 0.3);
+  if (index < 0) return null;
+  const rect = pages[index].getBoundingClientRect();
+  return { index, ratio: rect.height ? -rect.top / rect.height : 0 };
+}
 
 export function App() {
+  const [lang, setLangState] = useState(detectLang);
   const [active, setActive] = useState("top");
+  const pending = useRef(null);
+  const content = getContent(lang);
+  const { chapters, education, experiences, heroShots, honors, letter, papers, patents, profile, projects, prose, skills } = content;
+  const ui = UI[lang];
+
+  const navItems = NAV_IDS.map((id) => ({
+    id,
+    label: chapters[id].name || chapters[id].title,
+    short: chapters[id].short || chapters[id].title,
+  }));
+  const rulerItems = [{ id: "top", short: lang === "en" ? "Top" : "序" }, ...navItems];
+
+  const langValue = useMemo(() => ({
+    lang,
+    ui,
+    setLang: (next) => {
+      if (next === lang) return;
+      pending.current = readingPosition();
+      saveLang(next);
+      // 网址里带的 ?lang= 也一起改掉，免得刷新后又变回去
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("lang")) {
+        url.searchParams.delete("lang");
+        window.history.replaceState(null, "", url);
+      }
+      setLangState(next);
+    },
+  }), [lang, ui]);
+
+  // 语言写进 <html lang>、标题与描述
+  useLayoutEffect(() => {
+    document.documentElement.lang = HTML_LANG[lang];
+    document.title = profile.pageTitle;
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta && profile.description) meta.setAttribute("content", profile.description);
+  }, [lang, profile]);
+
+  // 换语言后整页重新挂载：回到刚才读的位置，再让所有滚动动画重新量一次
+  useLayoutEffect(() => {
+    const position = pending.current;
+    if (!position) return;
+    pending.current = null;
+    const page = document.querySelectorAll(".site .page")[position.index];
+    if (page) {
+      const top = page.getBoundingClientRect().top + window.scrollY + position.ratio * page.offsetHeight;
+      window.scrollTo({ top, behavior: "instant" });
+    }
+    ScrollTrigger.refresh();
+  }, [lang]);
 
   useLayoutEffect(() => {
-    document.title = profile.pageTitle;
     const triggers = [...document.querySelectorAll("[data-nav]")].map((section) =>
       ScrollTrigger.create({
         trigger: section,
@@ -66,7 +107,7 @@ export function App() {
       triggers.forEach((t) => t.kill());
       window.removeEventListener("load", refresh);
     };
-  }, []);
+  }, [lang]);
 
   const navigate = (selector) => (event) => {
     event?.preventDefault();
@@ -79,13 +120,14 @@ export function App() {
   // 页码：从首屏开始，一页一页往下数
   let folio = 0;
   const next = () => ++folio;
-  const head = (chapter, sub) => `${profile.name} · ${chapter.title}${sub ? ` · ${sub}` : ""}`;
+  const head = (chapter, sub) => `${profile.name} · ${chapter.name || chapter.title}${sub ? ` · ${sub}` : ""}`;
 
   return (
-    <div className="site" style={{ "--corner": corner() }}>
+    <LangContext.Provider value={langValue}>
+    <Preloader name={profile.name} nameEn={lang === "en" ? getContent("zh").profile.name : profile.nameEn} seal={profile.seal} />
+    <Cursor />
+    <div className="site" key={lang} style={{ "--corner": corner() }}>
       <InkDefs />
-      <Preloader name={profile.name} nameEn={profile.nameEn} seal={profile.seal} />
-      <Cursor />
       <div className="paper-grain" aria-hidden="true" />
       <Nav profile={profile} items={navItems} active={active} onNavigate={navigate} />
       <ScrollRuler items={rulerItems} active={active} onNavigate={navigate} />
@@ -93,7 +135,7 @@ export function App() {
 
       <main>
         <Hero profile={profile} shots={heroShots} skills={skills} onNavigate={navigate} folio={next()} style={PATTERNS.hero} />
-        <Page className="band band--oat" folio={next()} head={`${profile.name} · 自述`} aria-label="自述" style={PATTERNS.prose}>
+        <Page className="band band--oat" folio={next()} head={`${profile.name} · ${ui.preface}`} aria-label={ui.preface} style={PATTERNS.prose}>
           <Prose prose={prose} />
         </Page>
 
@@ -138,5 +180,6 @@ export function App() {
 
       <Letter profile={profile} letter={letter} chapter={chapters.letter} folio={next()} style={PATTERNS.letter} />
     </div>
+    </LangContext.Provider>
   );
 }

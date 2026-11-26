@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Check, EnvelopeSimple, GithubLogo, MapPin, Phone, WechatLogo, X } from "@phosphor-icons/react";
 import { gsap, useMotion, EASE, playWhileVisible, animatePlum, birdLoops, petalLoops, ambientLoops } from "../motion.js";
-import { ganzhiYear, season, shichen, solarTerm } from "../almanac.js";
-import { Birds, InkWash, Mountains, PageFrame, Petals, PlumBranch, Seal, toChineseNumeral } from "./Ornaments.jsx";
+import { ganzhiYear, season, seasonEn, shichen, solarTerm, solarTermEn } from "../almanac.js";
+import { folioText, glyphs, useLang } from "../i18n.jsx";
+import { Birds, InkWash, Mountains, PageFrame, Petals, PlumBranch, Seal } from "./Ornaments.jsx";
 
 async function copyText(value) {
   if (navigator.clipboard?.writeText) {
@@ -27,6 +28,7 @@ async function copyText(value) {
 
 function WechatDialog({ src, onClose }) {
   const ref = useRef(null);
+  const { ui } = useLang();
   useEffect(() => {
     const onKey = (event) => event.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -42,9 +44,9 @@ function WechatDialog({ src, onClose }) {
   return (
     <div ref={ref} className="wechat-backdrop" role="presentation" onClick={onClose}>
       <div className="wechat-dialog" role="dialog" aria-modal="true" aria-labelledby="wechat-title" onClick={(event) => event.stopPropagation()}>
-        <button type="button" className="wechat-close" onClick={onClose} aria-label="关闭微信二维码"><X size={16} weight="bold" /></button>
-        <img src={src} alt="微信好友二维码" />
-        <p id="wechat-title">微信扫码，添加好友</p>
+        <button type="button" className="wechat-close" onClick={onClose} aria-label={ui.wechatClose}><X size={16} weight="bold" /></button>
+        <img src={src} alt={ui.wechatAlt} />
+        <p id="wechat-title">{ui.wechatTitle}</p>
       </div>
     </div>
   );
@@ -53,6 +55,7 @@ function WechatDialog({ src, onClose }) {
 // 来信：整段写成一封信。「见字如面」一笔一笔写出来，落款处盖章。
 export function Letter({ profile, letter, chapter, folio, style }) {
   const ref = useRef(null);
+  const { lang, ui } = useLang();
   const [copied, setCopied] = useState("");
   const [wechatOpen, setWechatOpen] = useState(false);
   const timer = useRef(0);
@@ -95,7 +98,10 @@ export function Letter({ profile, letter, chapter, folio, style }) {
     return undefined;
   });
 
-  const label = (key, idle, done) => (copied === key ? done : copied === `${key}-error` ? "复制失败" : idle);
+  const label = (key, idle, done) => (copied === key ? done : copied === `${key}-error` ? ui.copyFailed : idle);
+  const signMeta = lang === "en"
+    ? `${seasonEn()} ${new Date().getFullYear()} · ${solarTermEn()} · ${profile.location}`
+    : `${ganzhiYear()}年${season()} · ${solarTerm()} · ${shichen()} · 书于${profile.location}`;
   // 落款：干支纪年 + 节气 + 时辰，比如「丙午年冬 · 小雪 · 亥时」
 
   return (
@@ -107,48 +113,48 @@ export function Letter({ profile, letter, chapter, folio, style }) {
       <Petals count={7} />
       <PlumBranch className="letter-plum" />
       <div className="letter-paper">
-        <p className="letter-index"><span>{chapter.index}</span> {chapter.title} · {chapter.en}</p>
+        <p className="letter-index"><span>{chapter.index}</span> {lang === "en" ? chapter.en : `${chapter.title} · ${chapter.en}`}</p>
         <h2 className="letter-greeting">
-          {[...letter.greeting].map((char, index) => <i key={index}>{char}</i>)}
+          {glyphs(letter.greeting).map((char, index) => <i key={index}>{char}</i>)}
           <span className="letter-caret" aria-hidden="true" />
         </h2>
         <div className="letter-body">{letter.body.map((line) => <p key={line}>{line}</p>)}</div>
 
         <ul className="contacts">
           <li className="contact-row">
-            <span className="contact-key"><EnvelopeSimple size={17} />邮箱</span>
+            <span className="contact-key"><EnvelopeSimple size={17} />{ui.email}</span>
             <span className="contact-value">{profile.email}</span>
             <button type="button" className="btn btn--small" onClick={copy(profile.email, "email")}>
-              {copied === "email" && <Check size={14} weight="bold" />}{label("email", "复制", "已复制")}
+              {copied === "email" && <Check size={14} weight="bold" />}{label("email", ui.copy, ui.copied)}
             </button>
           </li>
           <li className="contact-row">
-            <span className="contact-key"><Phone size={17} />电话</span>
+            <span className="contact-key"><Phone size={17} />{ui.phone}</span>
             <span className="contact-value">{profile.phone}</span>
             <button type="button" className="btn btn--small" onClick={copy(profile.phone, "phone")}>
-              {copied === "phone" && <Check size={14} weight="bold" />}{label("phone", "复制", "已复制")}
+              {copied === "phone" && <Check size={14} weight="bold" />}{label("phone", ui.copy, ui.copied)}
             </button>
           </li>
           <li className="contact-row">
-            <span className="contact-key"><WechatLogo size={17} />微信</span>
-            <span className="contact-value">扫码添加</span>
-            <button type="button" className="btn btn--small" onClick={() => setWechatOpen(true)} aria-haspopup="dialog">二维码</button>
+            <span className="contact-key"><WechatLogo size={17} />{ui.wechat}</span>
+            <span className="contact-value">{ui.scanToAdd}</span>
+            <button type="button" className="btn btn--small" onClick={() => setWechatOpen(true)} aria-haspopup="dialog">{ui.qr}</button>
           </li>
           <li className="contact-row">
             <span className="contact-key"><GithubLogo size={17} />GitHub</span>
             <span className="contact-value">{profile.github.replace("https://", "")}</span>
-            <a className="btn btn--small" href={profile.github} target="_blank" rel="noreferrer">前往 <ArrowUpRight size={13} /></a>
+            <a className="btn btn--small" href={profile.github} target="_blank" rel="noreferrer">{ui.go} <ArrowUpRight size={13} /></a>
           </li>
         </ul>
 
         <div className="letter-sign">
           <span className="letter-sign-name">{profile.name}</span>
-          <span className="letter-sign-meta"><MapPin size={14} />{ganzhiYear()}年{season()} · {solarTerm()} · {shichen()} · 书于{profile.location}</span>
+          <span className="letter-sign-meta"><MapPin size={14} />{signMeta}</span>
         </div>
         <Seal text={profile.seal} size="lg" className="letter-seal" />
       </div>
-      <p className="colophon">纸短情长，不尽欲言。</p>
-      {folio && <span className="folio" aria-hidden="true">— {toChineseNumeral(folio)} · 终 —</span>}
+      <p className="colophon">{ui.colophon}</p>
+      {folio && <span className="folio" aria-hidden="true">— {folioText(folio, lang)} · {ui.end} —</span>}
       {wechatOpen && <WechatDialog src={profile.wechatQr} onClose={() => setWechatOpen(false)} />}
     </section>
   );

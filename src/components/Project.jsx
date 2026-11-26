@@ -3,6 +3,7 @@ import { ArrowUpRight, GitFork, GithubLogo, Star } from "@phosphor-icons/react";
 import { gsap, useMotion, EASE } from "../motion.js";
 import { getGithubRepoStats, GITHUB_STATS_CACHE_TTL } from "../githubStats.js";
 import { HandArrow, HandUnderline, Seal, toChineseNumeral } from "./Ornaments.jsx";
+import { glyphs, useLang } from "../i18n.jsx";
 
 const BIG = "壹贰叁肆伍陆柒捌玖拾";
 
@@ -26,6 +27,7 @@ function useGithubStats(repoPath) {
 // 前后对比：拖动中线，左边是原始图片，右边是重建后的可编辑页面
 function CompareSlider({ before, after }) {
   const ref = useRef(null);
+  const { ui } = useLang();
   const pos = useRef({ value: 50 });
   const [value, setValue] = useState(50);
 
@@ -64,15 +66,15 @@ function CompareSlider({ before, after }) {
       }}
       onPointerMove={(event) => event.buttons === 1 && fromPointer(event)}
     >
-      <img className="compare-after" src={after} alt="重建后的可编辑 PPTX 页面，文本框处于选中状态" draggable="false" />
-      <div className="compare-before"><img src={before} alt="原始的图片式 PPT 页面" draggable="false" /></div>
-      <span className="compare-tag compare-tag--l">图片 PPT</span>
-      <span className="compare-tag compare-tag--r">可编辑 PPTX</span>
+      <img className="compare-after" src={after} alt={ui.compareAfterAlt} draggable="false" />
+      <div className="compare-before"><img src={before} alt={ui.compareBeforeAlt} draggable="false" /></div>
+      <span className="compare-tag compare-tag--l">{ui.compareBefore}</span>
+      <span className="compare-tag compare-tag--r">{ui.compareAfter}</span>
       <div
         className="compare-handle"
         role="slider"
         tabIndex={0}
-        aria-label="拖动对比原图与重建结果"
+        aria-label={ui.compareLabel}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={value}
@@ -89,6 +91,7 @@ function CompareSlider({ before, after }) {
 
 export function Project({ project }) {
   const ref = useRef(null);
+  const { ui } = useLang();
   const stats = useGithubStats(project.githubRepo);
   // 视频加载失败（比如还没上传）就退回截图
   const [videoFailed, setVideoFailed] = useState(false);
@@ -171,7 +174,7 @@ export function Project({ project }) {
     <article ref={ref} className="project">
       <span className="pj-water" aria-hidden="true">{BIG[Number(project.number) - 1]}</span>
       <div className="pj-copy">
-        <div className="pj-number" aria-hidden="true">
+        <div className="pj-number" aria-hidden="true" lang="zh-CN">
           {[..."其" + toChineseNumeral(Number(project.number))].map((d, i) => <span key={i}><i>{d}</i></span>)}
           <span className="pj-number-en"><i>{project.number}</i></span>
         </div>
@@ -184,7 +187,7 @@ export function Project({ project }) {
           <time>{project.period}</time>
           <span className="chip">{project.role}</span>
           {stats && (
-            <span className="pj-stats" aria-label={`${project.title} GitHub 统计`}>
+            <span className="pj-stats" aria-label={ui.stats(project.title)}>
               <span title={`Star ${stats.stars}`}><Star size={13} weight="fill" aria-hidden="true" />{stats.stars.toLocaleString("zh-CN")}</span>
               <span title={`Fork ${stats.forks}`}><GitFork size={13} weight="bold" aria-hidden="true" />{stats.forks.toLocaleString("zh-CN")}</span>
             </span>
@@ -196,7 +199,7 @@ export function Project({ project }) {
               key={link.label}
               target="_blank"
               rel="noreferrer"
-              aria-label={`${project.title} ${link.label}链接`}
+              aria-label={ui.linkLabel(project.title, link.label)}
             >
               {link.kind === "source" ? <GithubLogo size={14} /> : <ArrowUpRight size={14} />}
               {link.label}
@@ -223,7 +226,7 @@ export function Project({ project }) {
                     controls
                     playsInline
                     preload="metadata"
-                    aria-label={`${project.title} 演示视频`}
+                    aria-label={ui.videoLabel(project.title)}
                     onError={() => setVideoFailed(true)}
                   />
                 </div>
@@ -235,7 +238,7 @@ export function Project({ project }) {
             </figure>
             {project.motto && <Seal text={project.motto} size="sm" className="pj-motto" />}
             <HandArrow />
-            <p className="hand-note">{[...project.note].map((char, index) => <i key={index}>{char}</i>)}</p>
+            <p className="hand-note">{glyphs(project.note).map((char, index) => <i key={index}>{char}</i>)}</p>
           </div>
         </div>
         <p className="stack-caption">{caption}</p>

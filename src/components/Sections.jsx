@@ -1,15 +1,17 @@
 import { useRef } from "react";
 import { gsap, useMotion, EASE, playWhileVisible, animatePlum, ambientLoops, petalLoops, birdLoops } from "../motion.js";
-import { Asterisk, Bamboo, Birds, Boat, Cloud, Petals, Enso, Mountains, Orchid, InkWash, MarkedText, PageFrame, PlumBranch, Seal, toChineseNumeral } from "./Ornaments.jsx";
+import { Asterisk, Bamboo, Birds, Boat, Cloud, Petals, Enso, Mountains, Orchid, InkWash, MarkedText, PageFrame, PlumBranch, Seal } from "./Ornaments.jsx";
+import { folioText, glyphs, useLang } from "../i18n.jsx";
 
 // 一「页」：占满一屏，像书一样带书眉和页码
 export function Page({ folio, head, className = "", children, ...rest }) {
+  const { lang } = useLang();
   return (
     <section className={`page ${className}`} {...rest}>
       <PageFrame />
       {head && <span className="running-head" aria-hidden="true">{head}</span>}
       {children}
-      {folio && <span className="folio" aria-hidden="true">— {toChineseNumeral(folio)} —</span>}
+      {folio && <span className="folio" aria-hidden="true">— {folioText(folio, lang)} —</span>}
     </section>
   );
 }
@@ -17,6 +19,7 @@ export function Page({ folio, head, className = "", children, ...rest }) {
 // 一段随滚动「被墨染开」的自述：字从浅灰慢慢变成墨色，关键词下的手绘线跟着画出来
 export function Prose({ prose }) {
   const ref = useRef(null);
+  const { ui } = useLang();
 
   useMotion(ref, ({ motion }) => {
     if (!motion) return undefined;
@@ -64,7 +67,7 @@ export function Prose({ prose }) {
       <Petals count={5} />
       <span className="prose-quote" aria-hidden="true">“</span>
       <p className="prose-text"><MarkedText text={prose.text} marks={prose.marks} /></p>
-      <p className="prose-sign"><Asterisk /> 写在前面</p>
+      <p className="prose-sign"><Asterisk /> {ui.foreword}</p>
     </div>
   );
 }
@@ -140,15 +143,15 @@ export function ChapterTitle({ chapter, seal }) {
       <p className="tp-numeral">{chapter.numeral} · {chapter.index}</p>
       <div className="tp-center">
         <Enso seed={Number(chapter.index) || 1} />
-        <h2 className="tp-title">{[...chapter.title].map((char, index) => <span key={index}><i>{char}</i></span>)}</h2>
+        <h2 className="tp-title" lang="zh-CN" aria-label={chapter.name || chapter.title}>{[...chapter.title].map((char, index) => <span key={index}><i>{char}</i></span>)}</h2>
       </div>
       <p className="tp-en">{chapter.en}</p>
-      <p className="tp-epigraph">{[...chapter.epigraph].map((char, index) => <i key={index}>{char}</i>)}</p>
+      <p className="tp-epigraph">{glyphs(chapter.epigraph).map((char, index) => <i key={index}>{char}</i>)}</p>
       {chapter.poem && (
-        <aside className="tp-poem" aria-label={`${chapter.from}：${chapter.poem}`}>
+        <aside className="tp-poem" lang="zh-CN" aria-label={`${chapter.from}：${chapter.poem}`}>
           <p className="tp-poem-line">{[...first].map((char, index) => <i key={index}>{char}</i>)}</p>
           <p className="tp-poem-line">{[...(second || "")].map((char, index) => <i key={index}>{char}</i>)}</p>
-          <p className="tp-from">—— {chapter.from}</p>
+          <p className="tp-from" lang={/[A-Za-z]/.test(chapter.from) ? "en" : undefined}>—— {chapter.from}</p>
           <Seal text={seal} size="sm" className="tp-seal" />
         </aside>
       )}

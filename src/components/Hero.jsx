@@ -2,17 +2,19 @@ import { useRef } from "react";
 import { ArrowDown, PenNib } from "@phosphor-icons/react";
 import { gsap, ScrollTrigger, useMotion, whenIntroDone, EASE, playWhileVisible, birdLoops } from "../motion.js";
 import { ganzhiYear, shichen, solarTerm } from "../almanac.js";
-import { Asterisk, Birds, Cloud, HandCircle, Mountains, PageFrame, Seal, Squiggle, toChineseNumeral } from "./Ornaments.jsx";
+import { Asterisk, Birds, Cloud, HandCircle, Mountains, PageFrame, Seal, Squiggle } from "./Ornaments.jsx";
+import { folioText, useLang } from "../i18n.jsx";
+import { getContent } from "../data/content.js";
 
 // 首屏四周的「纸片」：真实作品截图 + 色卡手绘纹理块。x / y 为百分比位置，depth 越大视差越强。
-function buildTiles({ topLeft, topRight, bottomLeft, bottomRight }) {
+function buildTiles({ topLeft, topRight, bottomLeft, bottomRight }, note) {
   return [
     { kind: "img", ...topLeft, x: 3, y: 9, w: 230, rot: -4, depth: 1.2 },
     { kind: "card", tone: "heather", x: 21, y: 13, w: 78, rot: 6, depth: 0.6, v: 1 },
     { kind: "card", tone: "cactus", x: 11, y: 47, w: 118, rot: -2, depth: 0.9, v: 2 },
     { kind: "card", tone: "peach", x: 1, y: 70, w: 150, rot: 3, depth: 0.5, v: 0 },
     { kind: "img", ...bottomLeft, x: 17, y: 75, w: 185, rot: 5, depth: 1.4 },
-    { kind: "note", text: "研究 × 工程", x: 22, y: 36, w: 108, rot: -7, depth: 1.7 },
+    { kind: "note", text: note, x: 22, y: 36, w: 108, rot: -7, depth: 1.7 },
     { kind: "img", ...topRight, x: 75, y: 7, w: 240, rot: 4, depth: 1.1 },
     { kind: "card", tone: "oat", x: 70, y: 31, w: 76, rot: -8, depth: 1.8, v: 3 },
     { kind: "card", tone: "peach", x: 87, y: 40, w: 122, rot: 3, depth: 0.7, v: 1 },
@@ -24,7 +26,9 @@ function buildTiles({ topLeft, topRight, bottomLeft, bottomRight }) {
 
 export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
   const ref = useRef(null);
-  const tiles = buildTiles(shots);
+  const { lang, ui } = useLang();
+  const tiles = buildTiles(shots, ui.note);
+  const nameParts = lang === "en" ? profile.name.split(" ") : [...profile.name];
 
   useMotion(ref, ({ motion, desktop }) => {
     if (!motion) return undefined;
@@ -186,7 +190,7 @@ export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
         {tiles.map((tile, index) => {
           const Tag = tile.target ? "a" : "div";
           const linkProps = tile.target
-            ? { href: `#${tile.target}`, onClick: onNavigate(`#${tile.target}`), "aria-label": `查看 ${tile.label}` }
+            ? { href: `#${tile.target}`, onClick: onNavigate(`#${tile.target}`), "aria-label": ui.view(tile.label) }
             : { "aria-hidden": true };
           return (
           <Tag
@@ -216,7 +220,7 @@ export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
         <div className="hero-copy-inner">
           <p className="hero-eyebrow hero-fade"><Asterisk />{profile.eyebrow}<Asterisk /></p>
           <h1 className="hero-name">
-            {[...profile.name].map((char, index) => <span key={index}><i>{char}</i></span>)}
+            {nameParts.map((part, index) => <span key={index}><i>{part}</i></span>)}
             <Seal text={profile.seal} className="hero-seal" />
           </h1>
           <h2 className="hero-headline">
@@ -229,8 +233,8 @@ export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
           </h2>
           <p className="hero-intro hero-fade">{profile.intro}</p>
           <div className="hero-actions hero-fade">
-            <a href="#works" className="btn btn--ink" onClick={onNavigate("#works")}>浏览代表作 <ArrowDown size={16} /></a>
-            <a href="#letter" className="btn btn--ghost" onClick={onNavigate("#letter")}><PenNib size={16} /> 写一封信</a>
+            <a href="#works" className="btn btn--ink" onClick={onNavigate("#works")}>{ui.browseWorks} <ArrowDown size={16} /></a>
+            <a href="#letter" className="btn btn--ghost" onClick={onNavigate("#letter")}><PenNib size={16} /> {ui.writeLetter}</a>
           </div>
         </div>
       </div>
@@ -239,17 +243,17 @@ export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
       <Cloud className="cloud--b" flip />
       <Mountains className="hero-mountains" />
       <Birds count={3} className="hero-birds" />
-      <div className="hero-inscription" aria-label={`${year}年 ${term} ${hour}`}>
+      <div className="hero-inscription" lang="zh-CN" aria-label={`${year}年 ${term} ${hour}`}>
         <p>{[...`${year}年 ${term}`].map((c, i) => <i key={i}>{c}</i>)}</p>
-        <p>{[...`${hour} · 书于${profile.location}`].map((c, i) => <i key={i}>{c}</i>)}</p>
+        <p>{[...`${hour} · 书于${getContent("zh").profile.location}`].map((c, i) => <i key={i}>{c}</i>)}</p>
         <Seal text="知行" size="xs" />
       </div>
       <PageFrame />
 
-      <div className="scroll-cue hero-fade" aria-hidden="true"><span>向下翻阅</span><b><i /></b></div>
+      <div className="scroll-cue hero-fade" aria-hidden="true"><span>{ui.scrollCue}</span><b><i /></b></div>
 
-      <div className="marquee hero-fade" aria-label="技术栈">
-        <strong>技术栈</strong>
+      <div className="marquee hero-fade" aria-label={ui.stack}>
+        <strong>{ui.stack}</strong>
         <div className="marquee-window">
           <div className="marquee-track">
             {[0, 1].map((copy) => (
@@ -260,7 +264,7 @@ export function Hero({ profile, shots, skills, onNavigate, folio, style }) {
           </div>
         </div>
       </div>
-      {folio && <span className="folio" aria-hidden="true">— {toChineseNumeral(folio)} —</span>}
+      {folio && <span className="folio" aria-hidden="true">— {folioText(folio, lang)} —</span>}
     </section>
   );
 }

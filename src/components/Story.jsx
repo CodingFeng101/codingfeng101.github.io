@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useMotion, EASE, playWhileVisible, ambientLoops, birdLoops, petalLoops } from "../motion.js";
 import { Asterisk, Birds, Boat, Cloud, HandUnderline, Mountains, Petals, Seal } from "./Ornaments.jsx";
+import { useLang } from "../i18n.jsx";
 
 const XP_POEM = ["行到水穷处", "坐看云起时"];
 
@@ -69,7 +70,7 @@ export function Experience({ experiences }) {
       <Birds count={3} className="xp-birds" />
       <Petals count={5} />
       <div className="xp-boat-lane" aria-hidden="true"><div className="xp-boat-wrap"><Boat className="xp-boat" /></div></div>
-      <div className="xp-poem" aria-label={XP_POEM.join("，")}>
+      <div className="xp-poem" lang="zh-CN" aria-label={XP_POEM.join("，")}>
         {XP_POEM.map((line) => <p key={line}>{[...line].map((c, i) => <i key={i}>{c}</i>)}</p>)}
         <Seal text="所历" size="xs" />
       </div>
@@ -94,6 +95,7 @@ export function Experience({ experiences }) {
 // 所学：学校卡片 + 荣誉清单（每一条下面画一道手绘线）
 export function Education({ education, honors, seal }) {
   const ref = useRef(null);
+  const { ui } = useLang();
 
   useMotion(ref, ({ motion }) => {
     if (!motion) return undefined;
@@ -124,7 +126,7 @@ export function Education({ education, honors, seal }) {
         ))}
       </div>
       <div className="honors">
-        <p className="honors-title"><Asterisk /> 所获</p>
+        <p className="honors-title"><Asterisk /> {ui.honors}</p>
         <ol>
           {honors.map((honor, index) => (
             <li key={honor}>

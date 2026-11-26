@@ -2,10 +2,12 @@ import { useLayoutEffect, useRef } from "react";
 import { ArrowUp } from "@phosphor-icons/react";
 import { gsap, ScrollTrigger, useMotion, whenIntroDone, EASE } from "../motion.js";
 import { Seal } from "./Ornaments.jsx";
+import { useLang } from "../i18n.jsx";
 
 // 顶栏：往下滚自动收起，往上滚再出现；当前章节下方有一块墨色底跟着滑动
 export function Nav({ profile, items, active, onNavigate }) {
   const ref = useRef(null);
+  const { lang, ui, setLang } = useLang();
   const pillRef = useRef(null);
 
   useMotion(ref, ({ motion }) => {
@@ -53,11 +55,12 @@ export function Nav({ profile, items, active, onNavigate }) {
 
   return (
     <header ref={ref} className="nav">
-      <a href="#top" className="nav-brand" onClick={onNavigate("#top")} aria-label="回到开头">
+      <a href="#top" className="nav-brand" onClick={onNavigate("#top")} aria-label={ui.home}>
         <Seal text={profile.seal} size="xs" />
         <span>{profile.name}</span>
       </a>
-      <nav aria-label="主导航">
+      <div className="nav-right">
+      <nav aria-label={ui.mainNav}>
         <span ref={pillRef} className="nav-pill" aria-hidden="true" />
         {items.map((item) => (
           <a
@@ -68,10 +71,22 @@ export function Nav({ profile, items, active, onNavigate }) {
             aria-current={active === item.id ? "true" : undefined}
             onClick={onNavigate(`#${item.id}`)}
           >
-            {item.label}
+            <span className="nav-label">{item.label}</span>
+            <span className="nav-label--short">{item.short}</span>
           </a>
         ))}
       </nav>
+      <button
+        type="button"
+        className="lang-toggle"
+        onClick={() => setLang(lang === "en" ? "zh" : "en")}
+        aria-label={ui.switchLabel}
+        title={ui.switchLabel}
+        lang={lang === "en" ? "zh-CN" : "en"}
+      >
+        {ui.switchTo}
+      </button>
+      </div>
     </header>
   );
 }
@@ -79,6 +94,7 @@ export function Nav({ profile, items, active, onNavigate }) {
 // 左侧刻度尺：随滚动逐格点亮，章节名跟着高亮
 export function ScrollRuler({ items, active, onNavigate }) {
   const ref = useRef(null);
+  const { ui } = useLang();
   const ticks = 56;
 
   useMotion(ref, ({ motion }) => {
@@ -100,7 +116,7 @@ export function ScrollRuler({ items, active, onNavigate }) {
   });
 
   return (
-    <aside ref={ref} className="ruler" aria-label="章节">
+    <aside ref={ref} className="ruler" aria-label={ui.chapters}>
       <div className="ruler-ticks" aria-hidden="true">
         {Array.from({ length: ticks }, (_, index) => <i key={index} className={index % 7 === 0 ? "is-major" : ""} />)}
       </div>
@@ -121,6 +137,7 @@ export function ScrollRuler({ items, active, onNavigate }) {
 // 顶部一根细细的进度线（手机上代替刻度尺）+ 右下角回到顶部
 export function ProgressBits({ onNavigate }) {
   const ref = useRef(null);
+  const { ui } = useLang();
   useMotion(ref, () => {
     const q = gsap.utils.selector(ref.current);
     const circle = q(".totop circle")[0];
@@ -142,7 +159,7 @@ export function ProgressBits({ onNavigate }) {
   return (
     <div ref={ref}>
       <span className="topline" aria-hidden="true" />
-      <a href="#top" className="totop" onClick={onNavigate("#top")} aria-label="回到顶部">
+      <a href="#top" className="totop" onClick={onNavigate("#top")} aria-label={ui.toTop}>
         <svg className="totop-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" /></svg>
         <ArrowUp size={16} />
       </a>

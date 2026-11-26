@@ -233,6 +233,11 @@ export function toChineseNumeral(n) {
   return `${DIGITS[tens]}十${ones ? DIGITS[ones] : ""}`;
 }
 
+// 中文逐字；英文逐词，空格原样保留在词与词之间
+function splitInk(text) {
+  return /[㐀-鿿]/.test(text) ? [...text] : text.split(/(\s+)/).filter(Boolean);
+}
+
 // 把一段文字按词拆开，指定的词包上手绘下划线
 export function MarkedText({ text, marks = [], wordClass = "ink-word" }) {
   const pattern = new RegExp(`(${marks.map((m) => m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g");
@@ -244,12 +249,12 @@ export function MarkedText({ text, marks = [], wordClass = "ink-word" }) {
       const variant = markIndex++;
       return [
         <span className="marked" key={`m${partIndex}`}>
-          {[...part].map((char, i) => <span className={wordClass} key={i}>{char}</span>)}
+          {splitInk(part).map((piece, i) => (/^\s+$/.test(piece) ? piece : <span className={wordClass} key={i}>{piece}</span>))}
           <HandUnderline variant={variant} />
         </span>,
       ];
     }
-    return [...part].map((char, i) => <span className={wordClass} key={`${partIndex}-${i}`}>{char}</span>);
+    return splitInk(part).map((piece, i) => (/^\s+$/.test(piece) ? piece : <span className={wordClass} key={`${partIndex}-${i}`}>{piece}</span>));
   });
 }
 

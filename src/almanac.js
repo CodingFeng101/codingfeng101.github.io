@@ -32,3 +32,19 @@ export function shichen(date = new Date()) {
 export function season(date = new Date()) {
   return ["冬", "春", "春", "春", "夏", "夏", "夏", "秋", "秋", "秋", "冬", "冬"][date.getMonth()];
 }
+
+// 英文版落款用：节气与季节的英文名
+const TERMS_EN = {
+  小寒: "Minor Cold", 大寒: "Major Cold", 立春: "Start of Spring", 雨水: "Rain Water", 惊蛰: "Awakening of Insects", 春分: "Spring Equinox",
+  清明: "Clear and Bright", 谷雨: "Grain Rain", 立夏: "Start of Summer", 小满: "Grain Buds", 芒种: "Grain in Ear", 夏至: "Summer Solstice",
+  小暑: "Minor Heat", 大暑: "Major Heat", 立秋: "Start of Autumn", 处暑: "End of Heat", 白露: "White Dew", 秋分: "Autumn Equinox",
+  寒露: "Cold Dew", 霜降: "Frost's Descent", 立冬: "Start of Winter", 小雪: "Minor Snow", 大雪: "Major Snow", 冬至: "Winter Solstice",
+};
+
+export function solarTermEn(date = new Date()) {
+  return TERMS_EN[solarTerm(date)];
+}
+
+export function seasonEn(date = new Date()) {
+  return { 春: "Spring", 夏: "Summer", 秋: "Autumn", 冬: "Winter" }[season(date)];
+}

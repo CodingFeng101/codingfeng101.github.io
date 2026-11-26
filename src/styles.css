@@ -733,3 +733,63 @@ main { position: relative; }
   .tp-motif.plum { left: auto; width: 150px; height: auto; }
   .motif--boat { height: 60px; }
 }
+
+/* ———————————————— 语言切换 ———————————————— */
+.nav-right { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.nav-label--short { display: none; }
+.lang-toggle {
+  flex: none; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); color: var(--ink-2); cursor: pointer;
+  font-family: "Noto Serif SC", var(--serif); font-size: 13px; letter-spacing: .04em;
+  transition: box-shadow .3s, color .3s, background-color .3s;
+}
+.lang-toggle:hover { color: var(--ivory); background: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.lang-toggle:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+
+/* 英文版：字距收回来，西文用衬线体，大字号按词排 */
+:lang(en) .nav nav a { letter-spacing: .02em; font-family: var(--serif); }
+:lang(en) .nav-brand { letter-spacing: .01em; font-family: var(--serif); }
+:lang(en) .ruler ol a { letter-spacing: .04em; font-family: var(--serif); }
+:lang(en) .hero-name { column-gap: .26em; white-space: nowrap; font-family: var(--serif); font-size: clamp(44px, 6.2vw, 92px); letter-spacing: -.01em; }
+:lang(en) .hero-word { margin-right: .26em; }
+:lang(en) .hero-word:last-child { margin-right: 0; }
+:lang(en) .hero-word--mark { margin-left: 0; }
+:lang(en) .hero-seal { right: -.75em; }
+:lang(en) .hero-headline { font-family: var(--serif); letter-spacing: 0; }
+:lang(en) .hero-eyebrow { letter-spacing: .08em; }
+:lang(en) .pre-name { column-gap: .26em; font-family: var(--serif); letter-spacing: 0; }
+:lang(en) .pre-en { font-family: "Noto Serif SC", var(--serif); letter-spacing: .4em; }
+:lang(en) .tile--note .tile-body { font-family: var(--serif); font-size: 13px; letter-spacing: .02em; white-space: nowrap; text-align: center; }
+:lang(en) .prose-text { font-family: var(--serif); font-size: clamp(22px, 2.7vw, 38px); line-height: 1.6; letter-spacing: 0; }
+:lang(en) .prose-sign, :lang(en) .honors-title { letter-spacing: .08em; font-family: var(--serif); }
+:lang(en) .tp-numeral { letter-spacing: .2em; font-family: var(--serif); }
+:lang(en) .tp-en { margin-top: 14px; color: var(--ink); font-family: var(--serif); font-size: clamp(24px, 2.4vw, 34px); font-weight: 500; letter-spacing: .01em; text-transform: none; }
+:lang(en) .tp-epigraph i { display: inline-block; }
+:lang(en) .tp-epigraph { max-width: 34em; font-family: var(--serif); font-style: italic; letter-spacing: .01em; line-height: 1.6; }
+:lang(en) .tp-from { letter-spacing: .06em; font-family: var(--serif); }
+:lang(en) .pj-subtitle, :lang(en) .hand-note, :lang(en) .xp-body h3, :lang(en) .edu-card h3,
+:lang(en) .honors li > span, :lang(en) .count span, :lang(en) .letter-body, :lang(en) .letter-sign-name { font-family: var(--serif); letter-spacing: 0; }
+:lang(en) .hand-note { white-space: normal; max-width: 240px; text-align: center; }
+:lang(en) .rs-card h3 { font-family: var(--serif); line-height: 1.35; }
+:lang(en) .letter-greeting { flex-wrap: wrap; font-family: var(--serif); font-size: clamp(40px, 5.6vw, 72px); letter-spacing: 0; }
+:lang(en) .letter-sign-name { font-size: 24px; }
+:lang(en) .colophon { font-family: var(--serif); font-style: italic; letter-spacing: .04em; }
+:lang(en) .folio { font-family: var(--serif); letter-spacing: .2em; }
+:lang(en) .marquee strong, :lang(en) .scroll-cue { letter-spacing: .12em; font-family: var(--serif); }
+:lang(en) .stamp { letter-spacing: .02em; }
+
+@media (max-width: 760px) {
+  .nav { gap: 10px; }
+  .nav-right { gap: 6px; }
+  .nav nav { gap: 0; }
+  .lang-toggle { width: 30px; height: 30px; font-size: 12px; }
+  .nav-label { display: none; }
+  .nav-label--short { display: inline; }
+  :lang(en) .nav nav a { padding: 6px 5px; font-size: 13px; }
+  :lang(en) .hero-name { font-size: 36px; }
+  :lang(en) .hero-seal { right: -24px; top: -.3em; }
+  :lang(en) .hero-headline { font-size: 24px; }
+  :lang(en) .tp-en { font-size: 22px; }
+  :lang(en) .prose-text { font-size: 20px; }
+  :lang(en) .letter-greeting { font-size: 36px; }
+}

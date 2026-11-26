@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { SealCheck } from "@phosphor-icons/react";
 import { gsap, useMotion, EASE } from "../motion.js";
+import { useLang } from "../i18n.jsx";
 
 // 论文像夹在书里的书签卡，专利卡上会「盖章」
 export function Research({ papers, patents }) {
   const ref = useRef(null);
+  const { ui } = useLang();
 
   useMotion(ref, ({ motion, fine }) => {
     if (!motion) return undefined;
@@ -62,8 +64,8 @@ export function Research({ papers, patents }) {
   return (
     <div ref={ref} className="research">
       <div className="counts">
-        <p className="count"><b data-value={papers.length}>{papers.length}</b><span>篇论文<br />投稿与修改中</span></p>
-        <p className="count"><b data-value={patents.length}>{patents.length}</b><span>项发明专利<br />已获授权</span></p>
+        <p className="count"><b data-value={papers.length}>{papers.length}</b><span>{ui.papersCount[0]}<br />{ui.papersCount[1]}</span></p>
+        <p className="count"><b data-value={patents.length}>{patents.length}</b><span>{ui.patentsCount[0]}<br />{ui.patentsCount[1]}</span></p>
       </div>
       <div className="rs-grid">
         {papers.map((paper) => (
@@ -77,11 +79,11 @@ export function Research({ papers, patents }) {
         {patents.map((patent) => (
           <article className="rs-card rs-card--patent" key={patent.marker}>
             <span className="rs-ribbon" aria-hidden="true" />
-            <p className="rs-label"><b>{patent.marker}</b>已授权发明专利</p>
+            <p className="rs-label"><b>{patent.marker}</b>{ui.patentLabel}</p>
             <h3>{patent.title}</h3>
             {patent.summary && <p className="rs-summary">{patent.summary}</p>}
-            <p className="rs-number">第二发明人 · 专利号 {patent.number}</p>
-            <span className="stamp"><SealCheck size={18} weight="bold" />已授权</span>
+            <p className="rs-number">{ui.patentNumber(patent.number)}</p>
+            <span className="stamp"><SealCheck size={18} weight="bold" />{ui.granted}</span>
           </article>
         ))}
       </div>

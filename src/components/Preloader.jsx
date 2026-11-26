@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { gsap, useMotion, markIntroDone, EASE } from "../motion.js";
 import { Seal } from "./Ornaments.jsx";
+import { isLatin } from "../i18n.jsx";
 
 // 开场：印章落下 → 名字从纸里浮出 → 一根细线走完 → 幕布向上揭开
 export function Preloader({ name, nameEn, seal }) {
@@ -40,7 +41,7 @@ export function Preloader({ name, nameEn, seal }) {
     <div ref={ref} className="preloader" aria-hidden="true">
       <div className="pre-inner">
         <Seal text={seal} size="lg" className="pre-seal" />
-        <p className="pre-name">{[...name].map((char, index) => <span key={index}><i>{char}</i></span>)}</p>
+        <p className="pre-name">{(isLatin(name) ? name.split(" ") : [...name]).map((char, index) => <span key={index}><i>{char}</i></span>)}</p>
         <p className="pre-en">{nameEn}</p>
         <span className="pre-line" />
       </div>
