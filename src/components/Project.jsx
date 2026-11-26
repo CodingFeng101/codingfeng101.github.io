@@ -219,8 +219,7 @@ export function Project({ project }) {
               {showVideo ? (
                 <div className="shot-mask">
                   <video
-                    src={project.video}
-                    poster={project.image || project.after}
+                    src={`${project.video}#t=0.1`}
                     controls
                     playsInline
                     preload="metadata"
