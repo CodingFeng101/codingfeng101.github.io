@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, GitFork, GithubLogo, Star } from "@phosphor-icons/react";
-import { gsap, useMotion, EASE, playWhileVisible } from "../motion.js";
+import { gsap, useMotion, EASE } from "../motion.js";
 import { getGithubRepoStats, GITHUB_STATS_CACHE_TTL } from "../githubStats.js";
 import { HandArrow, HandUnderline, Seal, toChineseNumeral } from "./Ornaments.jsx";
 
-const STEMS = "甲乙丙丁戊己庚辛壬癸";
 const BIG = "壹贰叁肆伍陆柒捌玖拾";
 
 function useGithubStats(repoPath) {
@@ -163,25 +162,7 @@ export function Project({ project }) {
       };
     }
 
-    // —— 流程：连线画出，节点依次点亮，然后一颗墨点沿线循环流动 ——
-    const pipe = q(".pipeline")[0];
-    let flowWatch = null;
-    if (pipe) {
-      const steps = q(".pipe-step");
-      gsap.timeline({ scrollTrigger: { trigger: pipe, start: "top 88%" } })
-        .from(q(".pipe-line"), { scaleX: 0, duration: 1.2, ease: EASE.travel })
-        .from(steps, { opacity: 0, y: 12, duration: 0.5, stagger: 0.12, ease: EASE.soft }, "<0.1")
-        .add(() => {
-          const flow = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
-          flowWatch = playWhileVisible(pipe, [flow]);
-          flow.fromTo(q(".pipe-dot"), { left: "0%", opacity: 0 }, { left: "100%", duration: steps.length * 0.7, ease: "none", keyframes: { opacity: [0, 1, 1, 1, 0] } });
-          steps.forEach((step, index) => {
-            flow.to(step, { "--lit": 1, duration: 0.25, yoyo: true, repeat: 1, ease: "power1.inOut" }, (index / Math.max(steps.length - 1, 1)) * steps.length * 0.7 - 0.2);
-          });
-        });
-    }
-
-    return () => { removeTilt(); flowWatch?.kill(); };
+    return () => removeTilt();
   });
 
   const titleRuleVariant = Number(project.number) - 1;
@@ -259,14 +240,6 @@ export function Project({ project }) {
           </div>
         </div>
         <p className="stack-caption">{caption}</p>
-        {project.pipeline && (
-          <div className="pipeline" aria-label={`${project.title} 处理流程`}>
-            <span className="pipe-line" aria-hidden="true"><i className="pipe-dot" /></span>
-            {project.pipeline.map((label, index) => (
-              <span className="pipe-step" key={label}><b>{STEMS[index]}</b>{label}</span>
-            ))}
-          </div>
-        )}
       </div>
     </article>
   );
