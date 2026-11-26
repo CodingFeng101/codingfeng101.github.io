@@ -1,6 +1,8 @@
 import { useRef } from "react";
-import { gsap, ScrollTrigger, useMotion, EASE } from "../motion.js";
-import { Asterisk, HandUnderline, Seal } from "./Ornaments.jsx";
+import { gsap, ScrollTrigger, useMotion, EASE, playWhileVisible, ambientLoops, birdLoops, petalLoops } from "../motion.js";
+import { Asterisk, Birds, Boat, Cloud, HandUnderline, Mountains, Petals, Seal } from "./Ornaments.jsx";
+
+const XP_POEM = ["行到水穷处", "坐看云起时"];
 
 const isPlaceholder = (text) => /【.*】/.test(text);
 const Ph = ({ children }) => (isPlaceholder(children) ? <span className="placeholder">{children}</span> : children);
@@ -30,11 +32,47 @@ export function Experience({ experiences }) {
       });
       return ScrollTrigger.create({ trigger: item, start: "top 62%", toggleClass: "is-lit" });
     });
-    return () => triggers.forEach((t) => t.kill());
+
+    // —— 页面小景：远山浮起、祥云描出、小舟顺水漂、题诗一字字写出 ——
+    const page = ref.current.closest(".page") || ref.current;
+    gsap.timeline({ defaults: { ease: EASE.soft }, scrollTrigger: { trigger: page, start: "top 60%" } })
+      .from(q(".xp-mountains .mtn"), { yPercent: 40, opacity: 0, duration: 1.8, stagger: 0.15 })
+      .from(q(".xp-cloud .draw"), { drawSVG: "0%", duration: 1.4, stagger: 0.06, ease: "power2.inOut" }, "<0.2")
+      .from(q(".xp-boat .draw"), { drawSVG: "0%", duration: 1, stagger: 0.1, ease: "power2.inOut" }, "<0.3")
+      .from(q(".xp-boat .motif-leaf"), { opacity: 0, duration: 0.8 }, "<")
+      .from(q(".xp-poem i"), { opacity: 0, y: -6, duration: 0.3, stagger: 0.07 }, "<0.2")
+      .from(q(".xp-poem .seal"), { scale: 2.4, rotate: 25, opacity: 0, duration: 0.5, ease: "back.out(2.6)" });
+    gsap.fromTo(q(".xp-water"), { yPercent: 14 }, {
+      yPercent: -14, ease: "none",
+      scrollTrigger: { trigger: page, start: "top bottom", end: "bottom top", scrub: 1 },
+    });
+    q(".xp-mountains .mtn").forEach((layer, i) => {
+      gsap.to(layer, { y: 14 + i * 14, ease: "none", scrollTrigger: { trigger: page, start: "top top", end: "bottom top", scrub: 0.8 } });
+    });
+    // 小舟从左往右慢慢漂过整页（外层管漂移，里面的 svg 由 ambientLoops 管起伏）
+    const boat = q(".xp-boat-wrap")[0];
+    const drift = gsap.fromTo(boat, { x: () => -boat.offsetWidth }, {
+      x: () => boat.parentElement.offsetWidth, duration: 80, ease: "none", repeat: -1, invalidateOnRefresh: true,
+    });
+    drift.progress(0.12);
+    const watch = playWhileVisible(page, [drift, ...ambientLoops(page), ...birdLoops(page), ...petalLoops(page)]);
+
+    return () => { triggers.forEach((t) => t.kill()); watch.kill(); };
   });
 
   return (
     <div ref={ref} className="xp">
+      <span className="xp-water" aria-hidden="true">行</span>
+      <Mountains className="xp-mountains" />
+      <Cloud className="xp-cloud xp-cloud--a" />
+      <Cloud className="xp-cloud xp-cloud--b" flip />
+      <Birds count={3} className="xp-birds" />
+      <Petals count={5} />
+      <div className="xp-boat-lane" aria-hidden="true"><div className="xp-boat-wrap"><Boat className="xp-boat" /></div></div>
+      <div className="xp-poem" aria-label={XP_POEM.join("，")}>
+        {XP_POEM.map((line) => <p key={line}>{[...line].map((c, i) => <i key={i}>{c}</i>)}</p>)}
+        <Seal text="所历" size="xs" />
+      </div>
       <div className="xp-list">
         <span className="xp-line" aria-hidden="true"><i className="xp-fill" /></span>
         {experiences.map((item) => (

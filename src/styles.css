@@ -432,6 +432,41 @@ main { position: relative; }
 .xp-body li { position: relative; padding-left: 18px; color: var(--ink-2); font-size: 15px; line-height: 1.75; }
 .xp-body li::before { content: ""; position: absolute; top: .85em; left: 0; width: 8px; height: 1px; background: var(--gray); }
 
+/* 所历页的小景：远山、祥云、小舟、题诗，都在内容后面 */
+.xp-list { z-index: 1; }
+.xp > .petals { z-index: 0; }
+.xp-water {
+  position: absolute; z-index: -1; top: 50%; left: calc(var(--rail) + 2%); margin-top: -.55em; pointer-events: none; will-change: transform;
+  color: rgba(20, 20, 19, .04); font-family: "Noto Serif SC", var(--serif); font-size: clamp(280px, 34vw, 520px); font-weight: 500; line-height: 1;
+}
+.xp-mountains { height: clamp(140px, 22vh, 240px); }
+.xp-cloud--a { top: 9%; left: calc(var(--rail) + 3%); }
+.xp-cloud--b { top: 14%; right: 9%; width: clamp(90px, 9vw, 150px); }
+.xp-birds { top: 6%; }
+.xp-boat-lane { position: absolute; z-index: 0; left: 0; right: 0; bottom: 4%; height: clamp(80px, 10vw, 130px); overflow: hidden; pointer-events: none; }
+.xp-boat-wrap { position: absolute; left: 0; bottom: 0; width: clamp(130px, 13vw, 200px); will-change: transform; }
+.xp-boat-wrap .motif--boat { position: static; display: block; width: 100%; height: auto; }
+.xp-poem {
+  position: absolute; z-index: 0; top: 50%; right: calc(var(--pad) * .6); translate: 0 -50%;
+  display: flex; flex-direction: row-reverse; align-items: flex-start; gap: 12px;
+  color: var(--ink-3); font-family: "Noto Serif SC", var(--serif); font-size: 15px; letter-spacing: .4em;
+}
+.xp-poem p { writing-mode: vertical-rl; }
+.xp-poem p + p { margin-top: 2.6em; }
+.xp-poem i { font-style: normal; }
+.xp-poem .seal { align-self: flex-end; }
+@media (max-width: 1100px) {
+  .xp-poem { display: none; }
+}
+@media (max-width: 760px) {
+  .xp-water { font-size: 240px; left: 0; }
+  .xp-cloud--a { top: 5%; left: 4%; width: 84px; }
+  .xp-cloud--b { display: none; }
+  .xp-boat-wrap { width: 96px; }
+  .xp-boat-lane { height: 60px; bottom: 2%; }
+  .xp-mountains { height: 110px; }
+}
+
 /* ———————————————— 所学 ———————————————— */
 .edu { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: clamp(30px, 5vw, 80px); width: 100%; max-width: 1200px; margin: 0 auto; }
 .edu-cards { display: grid; gap: 18px; }
